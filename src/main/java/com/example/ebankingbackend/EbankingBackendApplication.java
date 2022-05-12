@@ -6,6 +6,7 @@ import com.example.ebankingbackend.enums.OperationType;
 import com.example.ebankingbackend.repositories.AccountOperationRepository;
 import com.example.ebankingbackend.repositories.BankAccountRepository;
 import com.example.ebankingbackend.repositories.CustomerRepository;
+import com.example.ebankingbackend.services.BankService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,11 +23,12 @@ public class EbankingBackendApplication {
         SpringApplication.run(EbankingBackendApplication.class, args);
     }
     @Bean
-    CommandLineRunner commandLineRunner(BankAccountRepository bankAccountRepository){
-
+    //CommandLineRunner commandLineRunner(BankAccountRepository bankAccountRepository){
+    CommandLineRunner commandLineRunner(BankService bankService){
 
         return args -> {
-            BankAccount bankAccount= bankAccountRepository.findById("3966c616-e554-458f-8013-ba17c26d9198").orElse(null);
+            bankService.consulter();
+            /*BankAccount bankAccount= bankAccountRepository.findById("3966c616-e554-458f-8013-ba17c26d9198").orElse(null);
             if(bankAccount!= null){
                 System.out.println("******************************");
                 System.out.println(bankAccount.getId());
@@ -44,7 +46,9 @@ public class EbankingBackendApplication {
                 bankAccount.getAccountOperationList().forEach(accountOperation -> {
                     System.out.println(accountOperation.getType()+"\t"+accountOperation.getOperationDate()+"\t"+accountOperation.getAmount());
                 });
-            }
+                }
+                */
+
         };
     }
     //@Bean
