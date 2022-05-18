@@ -37,24 +37,39 @@ public class BankAccountServiceImpl implements BankAccountService{
     }
 
     @Override
-    public BankAccount saveBankAccount(double initialBalance, String type, Long customerId) {
+    public CurrentAccount saveCurrentBankAccount(double initialBalance, double overDraft, Long customerId) throws CustomerNotFoundException {
         Customer customer=customerRepository.findById(customerId).orElse(null);
         if (customer==null){
             throw new CustomerNotFoundException("Customer Not Found.");
         }
         BankAccount bankAccount;
-        if (type.equals("current")){
-            bankAccount=new CurrentAccount();
-        }
-        else {
-            bankAccount=new SavingAccount();
-        }
-        bankAccount.setId(UUID.randomUUID().toString());
-        bankAccount.setCreatedAt(new Date());
-        bankAccount.setBalance(initialBalance);
-
-        return null;
+        CurrentAccount currentAccount=new CurrentAccount();
+        currentAccount.setId(UUID.randomUUID().toString());
+        currentAccount.setCreatedAt(new Date());
+        currentAccount.setBalance(initialBalance);
+        currentAccount.setOverDraft(overDraft);
+        currentAccount.setCustomer(customer);
+        CurrentAccount savedBankAccount = bankAccountRepository.save(currentAccount);
+        return savedBankAccount;
     }
+
+    @Override
+    public SavingAccount saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException {
+        Customer customer=customerRepository.findById(customerId).orElse(null);
+        if (customer==null){
+            throw new CustomerNotFoundException("Customer Not Found.");
+        }
+        BankAccount bankAccount;
+        SavingAccount savingAccount=new SavingAccount();
+        savingAccount.setId(UUID.randomUUID().toString());
+        savingAccount.setCreatedAt(new Date());
+        savingAccount.setBalance(initialBalance);
+        savingAccount.setInterestRate(interestRate);
+        savingAccount.setCustomer(customer);
+        SavingAccount savedBankAccount = bankAccountRepository.save(savingAccount);
+        return savedBankAccount;
+    }
+
 
     @Override
     public List<Customer> listCustomers() {
