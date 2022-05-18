@@ -4,6 +4,8 @@ import com.example.ebankingbackend.entities.BankAccount;
 import com.example.ebankingbackend.entities.CurrentAccount;
 import com.example.ebankingbackend.entities.Customer;
 import com.example.ebankingbackend.entities.SavingAccount;
+import com.example.ebankingbackend.exceptions.BalanceNotSufficientException;
+import com.example.ebankingbackend.exceptions.BankAccountNotFoundException;
 import com.example.ebankingbackend.exceptions.CustomerNotFoundException;
 import com.example.ebankingbackend.repositories.AccountOperationRepository;
 import com.example.ebankingbackend.repositories.BankAccountRepository;
@@ -73,16 +75,22 @@ public class BankAccountServiceImpl implements BankAccountService{
 
     @Override
     public List<Customer> listCustomers() {
-        return null;
+
+        return customerRepository.findAll();
     }
 
     @Override
-    public BankAccount getBankAccount(String accountId) {
-        return null;
+    public BankAccount getBankAccount(String accountId) throws BankAccountNotFoundException {
+        BankAccount bankAccount= bankAccountRepository.findById(accountId)
+                .orElseThrow(()->new BankAccountNotFoundException("Bank Account not Found."));
+        return bankAccount;
     }
 
     @Override
-    public void debit(String accountId, double amount, String description) {
+    public void debit(String accountId, double amount, String description) throws BankAccountNotFoundException, BalanceNotSufficientException {
+        BankAccount bankAccount=getBankAccount(accountId);
+        if(bankAccount.getBalance()<amount)
+            throw new BalanceNotSufficientException("Balance not Sufficient.");
 
     }
 

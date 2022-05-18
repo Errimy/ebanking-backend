@@ -4,6 +4,8 @@ import com.example.ebankingbackend.entities.BankAccount;
 import com.example.ebankingbackend.entities.CurrentAccount;
 import com.example.ebankingbackend.entities.Customer;
 import com.example.ebankingbackend.entities.SavingAccount;
+import com.example.ebankingbackend.exceptions.BalanceNotSufficientException;
+import com.example.ebankingbackend.exceptions.BankAccountNotFoundException;
 import com.example.ebankingbackend.exceptions.CustomerNotFoundException;
 
 import java.util.List;
@@ -14,8 +16,8 @@ public interface BankAccountService {
     SavingAccount saveSavingBankAccount(double initialBalance, double interestRate, Long customerId) throws CustomerNotFoundException;
 
     List<Customer> listCustomers();
-    BankAccount getBankAccount(String accountId);
-    void debit(String accountId, double amount, String description);
+    BankAccount getBankAccount(String accountId) throws BankAccountNotFoundException;
+    void debit(String accountId, double amount, String description) throws BankAccountNotFoundException, BalanceNotSufficientException;
     void credit(String accountId, double amount, String description);
     void transfer(String accountIdSource, String accountIdDestination, double amount);
     
