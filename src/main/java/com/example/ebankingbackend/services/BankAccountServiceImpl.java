@@ -1,9 +1,7 @@
 package com.example.ebankingbackend.services;
 
-import com.example.ebankingbackend.entities.BankAccount;
-import com.example.ebankingbackend.entities.CurrentAccount;
-import com.example.ebankingbackend.entities.Customer;
-import com.example.ebankingbackend.entities.SavingAccount;
+import com.example.ebankingbackend.entities.*;
+import com.example.ebankingbackend.enums.OperationType;
 import com.example.ebankingbackend.exceptions.BalanceNotSufficientException;
 import com.example.ebankingbackend.exceptions.BankAccountNotFoundException;
 import com.example.ebankingbackend.exceptions.CustomerNotFoundException;
@@ -91,6 +89,16 @@ public class BankAccountServiceImpl implements BankAccountService{
         BankAccount bankAccount=getBankAccount(accountId);
         if(bankAccount.getBalance()<amount)
             throw new BalanceNotSufficientException("Balance not Sufficient.");
+        AccountOperation accountOperation= new AccountOperation();
+        accountOperation.setType(OperationType.DEBIT);
+        accountOperation.setAmount(amount);
+        accountOperation.setDescription(description);
+        accountOperation.setOperationDate(new Date());
+        accountOperation.setBankAccount(bankAccount);
+        AccountOperation savedAccountOpertaion = accountOperationRepository.save(accountOperation);
+        bankAccount.setBalance(bankAccount.getBalance()-amount);
+        bankAccountRepository.save(bankAccount);
+
 
     }
 
