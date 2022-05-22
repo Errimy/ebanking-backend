@@ -1,7 +1,13 @@
 package com.example.ebankingbackend.web;
 
+import com.example.ebankingbackend.dtos.BankAccountDTO;
+import com.example.ebankingbackend.exceptions.BankAccountNotFoundException;
 import com.example.ebankingbackend.services.BankAccountService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class BankAccountRestAPI {
@@ -12,5 +18,14 @@ public class BankAccountRestAPI {
         this.bankAccountService=bankAccountService;
     }
 
-    public Bank
+    @GetMapping("/accounts/{accountId}")
+    public BankAccountDTO getBankAccount(@PathVariable String accountId) throws BankAccountNotFoundException {
+        return bankAccountService.getBankAccount(accountId);
+    }
+
+    @GetMapping("/accounts")
+    public List<BankAccountDTO> listAccount(){
+        return bankAccountService.bankAccountList();
+    }
+
 }
